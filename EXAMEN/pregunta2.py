@@ -1,0 +1,17 @@
+import cv2
+import matplotlib.pyplot as plt
+image1 = cv2.imread('lunares.png', cv2.IMREAD_GRAYSCALE)
+image2 = cv2.imread('monedas.png', cv2.IMREAD_GRAYSCALE)
+orb = cv2.ORB_create()
+keypoints1, descriptors1 = orb.detectAndCompute(image1, None)
+keypoints2, descriptors2 = orb.detectAndCompute(image2, None)
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+matches = bf.match(descriptors1, descriptors2)
+matches = sorted(matches, key=lambda x: x.distance)
+matched_image = cv2.drawMatches(image1, keypoints1, image2, keypoints2, matches[:50], None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+matched_image_rgb = cv2.cvtColor(matched_image, cv2.COLOR_BGR2RGB)
+plt.figure(figsize=(20, 10))
+plt.imshow(matched_image_rgb)
+plt.title('Emparejamiento de Características ORB')
+plt.axis('off')
+plt.show()
